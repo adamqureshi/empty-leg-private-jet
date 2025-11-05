@@ -3,37 +3,58 @@
 <head>
   <meta charset="utf-8">
   <title>EMILY™ — Empty‑Leg Alerts | Fly Swift Tail</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="Tell EMILY where you are and when you can fly. Get SMS alerts for discounted empty‑leg private jet flights.">
   <style>
-    :root{--bg:#0f0f10;--panel:#161718;--ink:#eee;--muted:#a0a6ad;--line:#2a2b2d}
+    :root{
+      --bg:#0f0f10;--panel:#161718;--ink:#eee;--muted:#a0a6ad;--line:#2a2b2d;
+      --radius:14px;--pad:14px;--tap:52px;--safe:env(safe-area-inset-bottom);
+    }
     *{box-sizing:border-box}
     html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
-    .wrap{max-width:720px;margin:0 auto;padding:32px 18px 96px}
-    header{display:flex;justify-content:space-between;align-items:center;padding:8px 0 16px;border-bottom:1px solid var(--line);margin-bottom:24px}
-    .logo{font-weight:700;letter-spacing:.2px}
-    .pill{font-size:12px;border:1px solid var(--line);padding:4px 10px;border-radius:999px;color:#b6bcc3;display:inline-flex;gap:6px;align-items:center}
-    h1{font-size:28px;line-height:1.15;margin:6px 0 8px}
-    p.sub{color:var(--muted);margin:0 0 18px;font-size:15px}
-    .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
-    .grid{display:grid;gap:14px}
-    @media(min-width:540px){.grid-2{grid-template-columns:1fr 1fr}}
-    label{display:block;font-size:13px;color:#8f949b;margin:0 0 6px}
-    input,select,textarea,button{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:#0b0b0c;color:var(--ink);font-size:16px;outline:none}
+    /* Prevent horizontal jiggle */
+    body{overflow-x:hidden}
+    .wrap{max-width:720px;margin:0 auto;padding:24px 16px calc(96px + var(--safe));}
+    header{display:flex;justify-content:space-between;align-items:center;padding:8px 0 16px;border-bottom:1px solid var(--line);margin-bottom:20px}
+    .logo{font-weight:700;letter-spacing:.2px;font-size:18px}
+    .pill{font-size:14px;border:1px solid var(--line);padding:8px 12px;border-radius:999px;color:#b6bcc3;display:inline-flex;gap:8px;align-items:center;min-height:44px}
+    h1{font-size:30px;line-height:1.2;margin:10px 0 10px}
+    p.sub{color:var(--muted);margin:0 0 20px;font-size:16px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+    .grid{display:grid;gap:16px}
+    @media(min-width:540px){.grid-2{grid-template-columns:1fr 1fr;gap:16px}}
+    label{display:block;font-size:14px;color:#9aa0a6;margin:0 0 8px}
+    input,select,textarea,button{
+      width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--line);
+      background:#0b0b0c;color:var(--ink);font-size:16px;outline:none;min-height:var(--tap);
+      -webkit-tap-highlight-color: transparent;
+    }
+    select{appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 fill=%22%23bfc5cc%22><path d=%22M7 10l5 5 5-5z%22/></svg>');background-repeat:no-repeat;background-position:right 12px center;padding-right:40px}
     input::placeholder,textarea::placeholder{color:#6b6f75}
     .row{display:flex;gap:10px;align-items:center}
     .row>*{flex:1}
     .hint{font-size:12px;color:#8b8f96;margin-top:6px}
-    .cta{margin-top:8px;background:#e9e9ea;color:#111;font-weight:700;border-color:#d7d7d9}
+    .cta{
+      margin-top:10px;background:#e9e9ea;color:#111;font-weight:800;border-color:#d7d7d9;
+      border-radius:14px;min-height:56px;font-size:17px;
+    }
     .cta:active{transform:translateY(1px)}
-    .consent{font-size:12px;color:#8b8f96;line-height:1.4;margin-top:6px}
-    .sticky{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(15,15,16,0),var(--bg) 30%);padding-top:16px}
-    .ok{color:#a5d6a7}
-    .warn{color:#ffd54f}
-    .err{color:#ff8a80}
+    .consent{font-size:12px;color:#8b8f96;line-height:1.5;margin-top:6px}
+    /* Sticky CTA that respects iOS safe-area and lifts above keyboard area */
+    .sticky-cta{
+      position:sticky;bottom:calc(12px + var(--safe));padding-top:16px;
+      background:linear-gradient(180deg,rgba(15,15,16,0),var(--bg) 40%);
+    }
+    .ok{color:#a5d6a7}.warn{color:#ffd54f}.err{color:#ff8a80}
     .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
-    .foot{margin-top:14px;color:#7a7f86;font-size:12px}
+    .foot{margin-top:12px;color:#7a7f86;font-size:12px}
     a{color:#fff;text-decoration:underline}
+    /* Focus styles for accessibility */
+    :focus-visible{outline:2px solid #9ecbff;outline-offset:2px;border-color:#9ecbff}
+    /* When keyboard opens on mobile, unstick CTA so inputs aren't covered */
+    .kb-open .sticky-cta{position:static}
+    /* Bigger tap target for the location chip */
+    #useGeo{min-width:140px;justify-content:center}
   </style>
 </head>
 <body>
@@ -53,8 +74,8 @@
       <div>
         <label for="origin">Home base (city or airport code)</label>
         <div class="row">
-          <input id="origin" name="origin" placeholder="Ex: TEB, VNY, West Palm Beach">
-          <button type="button" id="useGeo" class="pill" style="flex:0 0 auto">Use my location</button>
+          <input id="origin" name="origin" placeholder="Ex: TEB, VNY, West Palm Beach" autocomplete="off" enterkeyhint="done">
+          <button type="button" id="useGeo" class="pill">Use my location</button>
         </div>
         <div class="hint">We attach precise GPS only for matching (never shown publicly).</div>
       </div>
@@ -91,18 +112,18 @@
 
       <div>
         <label for="phone">Mobile (for SMS alerts)</label>
-        <input id="phone" name="phone" inputmode="tel" placeholder="+1 555 123 4567">
+        <input id="phone" name="phone" inputmode="tel" placeholder="+1 555 123 4567" autocomplete="tel" enterkeyhint="next">
         <div class="hint">Reply STOP to opt out.</div>
       </div>
 
       <div>
         <label for="email">Email (optional)</label>
-        <input id="email" name="email" type="email" placeholder="you@email.com">
+        <input id="email" name="email" type="email" placeholder="you@email.com" autocomplete="email" enterkeyhint="next">
       </div>
 
       <div>
         <label for="notes">Anything we should know?</label>
-        <textarea id="notes" name="notes" rows="3" placeholder="Open to PBI/FLL/MIA; small dog; golf bags…"></textarea>
+        <textarea id="notes" name="notes" rows="3" placeholder="Open to PBI/FLL/MIA; small dog; golf bags…" enterkeyhint="done"></textarea>
       </div>
 
       <!-- hidden context -->
@@ -118,7 +139,7 @@
         <label><input type="checkbox" id="consent" required> I agree to receive empty‑leg alerts via SMS/email and to the <a href="/terms" target="_blank" rel="noopener">Terms</a> &amp; <a href="/privacy" target="_blank" rel="noopener">Privacy</a>. Msg &amp; data rates may apply.</label>
       </div>
 
-      <div class="sticky">
+      <div class="sticky-cta">
         <button class="cta" type="submit" id="submitBtn">Get Empty‑Leg Alerts</button>
         <div class="foot" id="formStatus" role="status" aria-live="polite"></div>
       </div>
@@ -132,6 +153,8 @@
   const qs=(s)=>document.querySelector(s);
   const status=qs('#formStatus');
   const locPill=qs('#locStatus');
+
+  // iOS safe-area padding for full-bleed devices is handled via CSS variables above.
 
   const today=new Date().toISOString().split('T')[0];
   qs('#earliest').min=today; qs('#latest').min=today;
@@ -154,6 +177,20 @@
 
   function haveContact(){ return !!(qs('#phone').value.trim() || qs('#email').value.trim()); }
 
+  // Avoid sticky CTA overlapping focused inputs: toggle .kb-open on focus
+  const inputs = document.querySelectorAll('input, select, textarea');
+  inputs.forEach(el=>{
+    el.addEventListener('focus', ()=> document.body.classList.add('kb-open'));
+    el.addEventListener('blur', ()=> setTimeout(()=>document.body.classList.remove('kb-open'), 100));
+  });
+
+  // Scroll the focused field into view on mobile for thumb reach
+  inputs.forEach(el=>{
+    el.addEventListener('focus', ()=>{
+      setTimeout(()=>{ el.scrollIntoView({behavior:'smooth', block:'center'}); }, 50);
+    });
+  });
+
   qs('#emilyForm').addEventListener('submit', async (e)=>{
     e.preventDefault();
     status.textContent='';
@@ -172,6 +209,7 @@
       if(!res.ok) throw new Error('Server error');
       e.target.reset(); qs('#lat').value=''; qs('#lng').value=''; locPill.textContent='📍 Location not set'; locPill.classList.remove('ok');
       status.textContent='Thanks! EMILY will text you when a matching empty‑leg pops up.';
+      window.scrollTo({top:0,behavior:'smooth'});
     }catch(err){
       status.textContent='Could not save right now. You can email ops@flyswifttail.com and we\'ll follow up.';
     }finally{ qs('#submitBtn').disabled=false; }
